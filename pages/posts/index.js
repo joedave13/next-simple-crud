@@ -2,6 +2,7 @@
 import axios from 'axios';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import Layout from '../../components/Layout';
 
 export async function getServerSideProps() {
@@ -17,6 +18,17 @@ export async function getServerSideProps() {
 
 function PostIndex(props) {
   const { posts } = props;
+
+  const router = useRouter();
+
+  const refreshTable = () => {
+    router.replace(router.asPath);
+  };
+
+  const deletePost = async (id) => {
+    await axios.delete(`${process.env.NEXT_PUBLIC_API_BACKEND}/posts/${id}`);
+    refreshTable();
+  };
 
   return (
     <Layout>
@@ -58,7 +70,10 @@ function PostIndex(props) {
                               Edit
                             </button>
                           </Link>
-                          <button className="btn btn-sm btn-danger border-0 shadow-sm mb-3 me-3">
+                          <button
+                            onClick={() => deletePost(post.id)}
+                            className="btn btn-sm btn-danger border-0 shadow-sm mb-3 me-3"
+                          >
                             Delete
                           </button>
                         </td>
